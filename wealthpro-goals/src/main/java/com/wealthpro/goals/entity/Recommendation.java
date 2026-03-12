@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import com.wealthpro.goals.enums.RecommendationStatus;
 
 @Entity
 @Table(name = "recommendations")
@@ -33,10 +34,5 @@ public class Recommendation {
     private LocalDateTime proposedDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private RecommendationStatus status;
-
-    public enum RecommendationStatus {
-        DRAFT, SUBMITTED, APPROVED, REJECTED
-    }
 }

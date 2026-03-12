@@ -1,6 +1,6 @@
 package com.wealthpro.goals.dto;
 
-import com.wealthpro.goals.entity.Goal.GoalType;
+import com.wealthpro.goals.enums.GoalType;
 import lombok.Data;
 
 import java.math.BigDecimal;

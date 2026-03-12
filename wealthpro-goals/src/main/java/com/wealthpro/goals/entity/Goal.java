@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import com.wealthpro.goals.enums.GoalType;
 
 @Entity
 @Table(name = "goals")
@@ -37,8 +38,4 @@ public class Goal {
 
     @Column(nullable = false)
     private String status;
-
-    public enum GoalType {
-        RETIREMENT, EDUCATION, WEALTH, CUSTOM
-    }
 }

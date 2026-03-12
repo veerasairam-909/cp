@@ -1,6 +1,6 @@
 package com.wealthpro.goals.dto;
 
-import com.wealthpro.goals.entity.Recommendation.RecommendationStatus;
+import com.wealthpro.goals.enums.RecommendationStatus;
 import lombok.Data;
 
 import java.time.LocalDateTime;
