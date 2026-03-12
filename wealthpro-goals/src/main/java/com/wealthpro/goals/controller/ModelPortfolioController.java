@@ -1,7 +1,6 @@
 package com.wealthpro.goals.controller;
 
-import com.wealthpro.goals.dto.ModelPortfolioRequestDTO;
-import com.wealthpro.goals.dto.ModelPortfolioResponseDTO;
+import com.wealthpro.goals.dto.ModelPortfolioDTO;
 import com.wealthpro.goals.service.ModelPortfolioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +18,12 @@ public class ModelPortfolioController {
     private final ModelPortfolioService modelPortfolioService;
 
     @PostMapping
-    public ResponseEntity<ModelPortfolioResponseDTO> createModelPortfolio(@Valid @RequestBody ModelPortfolioRequestDTO modelPortfolioRequestDTO) {
-        return new ResponseEntity<>(modelPortfolioService.createModelPortfolio(modelPortfolioRequestDTO), HttpStatus.CREATED);
+    public ResponseEntity<ModelPortfolioDTO> createModelPortfolio(@Valid @RequestBody ModelPortfolioDTO modelPortfolioDTO) {
+        return new ResponseEntity<>(modelPortfolioService.createModelPortfolio(modelPortfolioDTO), HttpStatus.CREATED);
     }
 
     @GetMapping("/active")
-    public ResponseEntity<List<ModelPortfolioResponseDTO>> getAllActiveModelPortfolios() {
+    public ResponseEntity<List<ModelPortfolioDTO>> getAllActiveModelPortfolios() {
         return ResponseEntity.ok(modelPortfolioService.getAllActiveModelPortfolios());
     }
 }

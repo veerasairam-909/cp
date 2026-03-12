@@ -1,7 +1,6 @@
 package com.wealthpro.goals.service.impl;
 
-import com.wealthpro.goals.dto.GoalRequestDTO;
-import com.wealthpro.goals.dto.GoalResponseDTO;
+import com.wealthpro.goals.dto.GoalDTO;
 import com.wealthpro.goals.entity.Goal;
 import com.wealthpro.goals.exception.ResourceNotFoundException;
 import com.wealthpro.goals.client.ExternalIntegrationService;
@@ -23,7 +22,7 @@ public class GoalServiceImpl implements GoalService {
 
     @Override
     @Transactional
-    public GoalResponseDTO createGoal(GoalRequestDTO requestDTO) {
+    public GoalDTO createGoal(GoalDTO requestDTO) {
         if (!externalIntegrationService.validateClientExists(requestDTO.getClientId())) {
             throw new IllegalArgumentException("Invalid Client ID from External Service: " + requestDTO.getClientId());
         }
@@ -37,28 +36,28 @@ public class GoalServiceImpl implements GoalService {
                 .status(requestDTO.getStatus())
                 .build();
         Goal savedGoal = goalRepository.save(goal);
-        return mapToGoalResponseDTO(savedGoal);
+        return mapToGoalDTO(savedGoal);
     }
 
     @Override
-    public List<GoalResponseDTO> getGoalsByClientId(Long clientId) {
+    public List<GoalDTO> getGoalsByClientId(Long clientId) {
         return goalRepository.findByClientId(clientId).stream()
-                .map(this::mapToGoalResponseDTO)
+                .map(this::mapToGoalDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public GoalResponseDTO updateGoalStatus(Long goalId, String status) {
+    public GoalDTO updateGoalStatus(Long goalId, String status) {
         Goal goal = goalRepository.findById(goalId)
                 .orElseThrow(() -> new ResourceNotFoundException("Goal not found with id: " + goalId));
         goal.setStatus(status);
         Goal updatedGoal = goalRepository.save(goal);
-        return mapToGoalResponseDTO(updatedGoal);
+        return mapToGoalDTO(updatedGoal);
     }
 
-    private GoalResponseDTO mapToGoalResponseDTO(Goal goal) {
-        GoalResponseDTO dto = new GoalResponseDTO();
+    private GoalDTO mapToGoalDTO(Goal goal) {
+        GoalDTO dto = new GoalDTO();
         dto.setGoalId(goal.getGoalId());
         dto.setClientId(goal.getClientId());
         dto.setGoalType(goal.getGoalType());

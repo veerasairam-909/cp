@@ -1,7 +1,6 @@
 package com.wealthpro.goals.service;
 
-import com.wealthpro.goals.dto.ModelPortfolioRequestDTO;
-import com.wealthpro.goals.dto.ModelPortfolioResponseDTO;
+import com.wealthpro.goals.dto.ModelPortfolioDTO;
 import com.wealthpro.goals.entity.ModelPortfolio;
 import com.wealthpro.goals.client.ExternalIntegrationService;
 import com.wealthpro.goals.repository.ModelPortfolioRepository;
@@ -33,7 +32,7 @@ class ModelPortfolioServiceImplTest {
     private ModelPortfolioServiceImpl modelPortfolioService;
 
     private ModelPortfolio modelPortfolio;
-    private ModelPortfolioRequestDTO modelPortfolioRequestDTO;
+    private ModelPortfolioDTO modelPortfolioDTO;
 
     @BeforeEach
     void setUp() {
@@ -45,19 +44,19 @@ class ModelPortfolioServiceImplTest {
                 .status("ACTIVE")
                 .build();
 
-        modelPortfolioRequestDTO = new ModelPortfolioRequestDTO();
-        modelPortfolioRequestDTO.setName("Aggressive Growth");
-        modelPortfolioRequestDTO.setRiskClass("HIGH");
-        modelPortfolioRequestDTO.setWeightsJson("{\"equity\":80,\"debt\":20}");
-        modelPortfolioRequestDTO.setStatus("ACTIVE");
+        modelPortfolioDTO = new ModelPortfolioDTO();
+        modelPortfolioDTO.setName("Aggressive Growth");
+        modelPortfolioDTO.setRiskClass("HIGH");
+        modelPortfolioDTO.setWeightsJson("{\"equity\":80,\"debt\":20}");
+        modelPortfolioDTO.setStatus("ACTIVE");
     }
 
     @Test
-    void createModelPortfolio_ShouldReturnModelPortfolioResponseDTO() {
+    void createModelPortfolio_ShouldReturnModelPortfolioDTO() {
         when(externalIntegrationService.validateRiskClassExists("HIGH")).thenReturn(true);
         when(modelPortfolioRepository.save(any(ModelPortfolio.class))).thenReturn(modelPortfolio);
 
-        ModelPortfolioResponseDTO response = modelPortfolioService.createModelPortfolio(modelPortfolioRequestDTO);
+        ModelPortfolioDTO response = modelPortfolioService.createModelPortfolio(modelPortfolioDTO);
 
         assertNotNull(response);
         assertEquals(modelPortfolio.getName(), response.getName());
@@ -68,7 +67,7 @@ class ModelPortfolioServiceImplTest {
     void getAllActiveModelPortfolios_ShouldReturnListOfPortfolios() {
         when(modelPortfolioRepository.findByStatus("ACTIVE")).thenReturn(Collections.singletonList(modelPortfolio));
 
-        List<ModelPortfolioResponseDTO> responses = modelPortfolioService.getAllActiveModelPortfolios();
+        List<ModelPortfolioDTO> responses = modelPortfolioService.getAllActiveModelPortfolios();
 
         assertNotNull(responses);
         assertEquals(1, responses.size());

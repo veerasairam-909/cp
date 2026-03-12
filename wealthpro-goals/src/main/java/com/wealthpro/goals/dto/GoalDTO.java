@@ -10,8 +10,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
-public class GoalRequestDTO {
+public class GoalDTO {
     
+    private Long goalId;
+
     @NotNull(message = "Client ID is required")
     private Long clientId;
     

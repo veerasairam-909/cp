@@ -1,8 +1,7 @@
 package com.wealthpro.goals.service.impl;
 
-import com.wealthpro.goals.dto.ModelPortfolioResponseDTO;
-import com.wealthpro.goals.dto.RecommendationRequestDTO;
-import com.wealthpro.goals.dto.RecommendationResponseDTO;
+import com.wealthpro.goals.dto.ModelPortfolioDTO;
+import com.wealthpro.goals.dto.RecommendationDTO;
 import com.wealthpro.goals.entity.ModelPortfolio;
 import com.wealthpro.goals.entity.Recommendation;
 import com.wealthpro.goals.exception.ResourceNotFoundException;
@@ -29,7 +28,7 @@ public class RecommendationServiceImpl implements RecommendationService {
 
     @Override
     @Transactional
-    public RecommendationResponseDTO createRecommendation(RecommendationRequestDTO requestDTO) {
+    public RecommendationDTO createRecommendation(RecommendationDTO requestDTO) {
         if (!externalIntegrationService.validateClientExists(requestDTO.getClientId())) {
             throw new IllegalArgumentException("Invalid Client ID from External Service: " + requestDTO.getClientId());
         }
@@ -79,36 +78,36 @@ public class RecommendationServiceImpl implements RecommendationService {
                 .status(requestDTO.getStatus())
                 .build();
         Recommendation savedRecommendation = recommendationRepository.save(recommendation);
-        return mapToRecommendationResponseDTO(savedRecommendation);
+        return mapToRecommendationDTO(savedRecommendation);
     }
 
     @Override
-    public List<RecommendationResponseDTO> getRecommendationsByClientId(Long clientId) {
+    public List<RecommendationDTO> getRecommendationsByClientId(Long clientId) {
         return recommendationRepository.findByClientId(clientId).stream()
-                .map(this::mapToRecommendationResponseDTO)
+                .map(this::mapToRecommendationDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public RecommendationResponseDTO getRecommendationById(Long recoId) {
+    public RecommendationDTO getRecommendationById(Long recoId) {
         Recommendation recommendation = recommendationRepository.findById(recoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Recommendation not found with id: " + recoId));
-        return mapToRecommendationResponseDTO(recommendation);
+        return mapToRecommendationDTO(recommendation);
     }
 
-    private RecommendationResponseDTO mapToRecommendationResponseDTO(Recommendation recommendation) {
-        RecommendationResponseDTO dto = new RecommendationResponseDTO();
+    private RecommendationDTO mapToRecommendationDTO(Recommendation recommendation) {
+        RecommendationDTO dto = new RecommendationDTO();
         dto.setRecoId(recommendation.getRecoId());
         dto.setClientId(recommendation.getClientId());
-        dto.setModelPortfolio(mapToModelPortfolioResponseDTO(recommendation.getModelPortfolio()));
+        dto.setModelPortfolio(mapToModelPortfolioDTO(recommendation.getModelPortfolio()));
         dto.setProposalJson(recommendation.getProposalJson());
         dto.setProposedDate(recommendation.getProposedDate());
         dto.setStatus(recommendation.getStatus());
         return dto;
     }
 
-    private ModelPortfolioResponseDTO mapToModelPortfolioResponseDTO(ModelPortfolio model) {
-        ModelPortfolioResponseDTO dto = new ModelPortfolioResponseDTO();
+    private ModelPortfolioDTO mapToModelPortfolioDTO(ModelPortfolio model) {
+        ModelPortfolioDTO dto = new ModelPortfolioDTO();
         dto.setModelId(model.getModelId());
         dto.setName(model.getName());
         dto.setRiskClass(model.getRiskClass());

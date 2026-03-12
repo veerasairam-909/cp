@@ -1,7 +1,6 @@
 package com.wealthpro.goals.service;
 
-import com.wealthpro.goals.dto.GoalRequestDTO;
-import com.wealthpro.goals.dto.GoalResponseDTO;
+import com.wealthpro.goals.dto.GoalDTO;
 import com.wealthpro.goals.entity.Goal;
 import com.wealthpro.goals.enums.GoalType;
 import com.wealthpro.goals.exception.ResourceNotFoundException;
@@ -38,7 +37,7 @@ class GoalServiceImplTest {
     private GoalServiceImpl goalService;
 
     private Goal goal;
-    private GoalRequestDTO goalRequestDTO;
+    private GoalDTO goalDTO;
 
     @BeforeEach
     void setUp() {
@@ -52,21 +51,21 @@ class GoalServiceImplTest {
                 .status("ACTIVE")
                 .build();
 
-        goalRequestDTO = new GoalRequestDTO();
-        goalRequestDTO.setClientId(100L);
-        goalRequestDTO.setGoalType(GoalType.RETIREMENT);
-        goalRequestDTO.setTargetAmount(new BigDecimal("1000000"));
-        goalRequestDTO.setTargetDate(LocalDate.now().plusYears(10));
-        goalRequestDTO.setPriority(1);
-        goalRequestDTO.setStatus("ACTIVE");
+        goalDTO = new GoalDTO();
+        goalDTO.setClientId(100L);
+        goalDTO.setGoalType(GoalType.RETIREMENT);
+        goalDTO.setTargetAmount(new BigDecimal("1000000"));
+        goalDTO.setTargetDate(LocalDate.now().plusYears(10));
+        goalDTO.setPriority(1);
+        goalDTO.setStatus("ACTIVE");
     }
 
     @Test
-    void createGoal_ShouldReturnGoalResponseDTO() {
+    void createGoal_ShouldReturnGoalDTO() {
         when(externalIntegrationService.validateClientExists(100L)).thenReturn(true);
         when(goalRepository.save(any(Goal.class))).thenReturn(goal);
 
-        GoalResponseDTO response = goalService.createGoal(goalRequestDTO);
+        GoalDTO response = goalService.createGoal(goalDTO);
 
         assertNotNull(response);
         assertEquals(goal.getGoalId(), response.getGoalId());
@@ -78,7 +77,7 @@ class GoalServiceImplTest {
     void getGoalsByClientId_ShouldReturnListOfGoals() {
         when(goalRepository.findByClientId(100L)).thenReturn(Collections.singletonList(goal));
 
-        List<GoalResponseDTO> responses = goalService.getGoalsByClientId(100L);
+        List<GoalDTO> responses = goalService.getGoalsByClientId(100L);
 
         assertNotNull(responses);
         assertEquals(1, responses.size());
@@ -90,7 +89,7 @@ class GoalServiceImplTest {
         when(goalRepository.findById(1L)).thenReturn(Optional.of(goal));
         when(goalRepository.save(any(Goal.class))).thenReturn(goal);
 
-        GoalResponseDTO response = goalService.updateGoalStatus(1L, "COMPLETED");
+        GoalDTO response = goalService.updateGoalStatus(1L, "COMPLETED");
 
         assertNotNull(response);
         assertEquals("COMPLETED", goal.getStatus());

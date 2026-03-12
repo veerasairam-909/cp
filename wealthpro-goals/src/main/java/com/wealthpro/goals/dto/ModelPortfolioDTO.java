@@ -4,8 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class ModelPortfolioRequestDTO {
+public class ModelPortfolioDTO {
     
+    private Long modelId;
+
     @NotBlank(message = "Name is required")
     private String name;
     

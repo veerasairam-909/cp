@@ -1,7 +1,7 @@
 package com.wealthpro.goals.service;
 
-import com.wealthpro.goals.dto.RecommendationRequestDTO;
-import com.wealthpro.goals.dto.RecommendationResponseDTO;
+import com.wealthpro.goals.dto.RecommendationDTO;
+import com.wealthpro.goals.enums.RecommendationStatus;
 import com.wealthpro.goals.entity.ModelPortfolio;
 import com.wealthpro.goals.entity.Recommendation;
 import com.wealthpro.goals.client.ExternalIntegrationService;
@@ -44,7 +44,7 @@ class RecommendationServiceImplTest {
 
     private ModelPortfolio modelPortfolio;
     private Recommendation recommendation;
-    private RecommendationRequestDTO recommendationRequestDTO;
+    private RecommendationDTO recommendationDTO;
 
     @BeforeEach
     void setUp() {
@@ -65,15 +65,15 @@ class RecommendationServiceImplTest {
                 .status(RecommendationStatus.DRAFT)
                 .build();
 
-        recommendationRequestDTO = new RecommendationRequestDTO();
-        recommendationRequestDTO.setClientId(100L);
-        recommendationRequestDTO.setModelId(1L);
-        recommendationRequestDTO.setProposalJson("{\"comments\":\"Recommended\"}");
-        recommendationRequestDTO.setStatus(RecommendationStatus.DRAFT);
+        recommendationDTO = new RecommendationDTO();
+        recommendationDTO.setClientId(100L);
+        recommendationDTO.setModelId(1L);
+        recommendationDTO.setProposalJson("{\"comments\":\"Recommended\"}");
+        recommendationDTO.setStatus(RecommendationStatus.DRAFT);
     }
 
     @Test
-    void createRecommendation_ShouldReturnRecommendationResponseDTO() {
+    void createRecommendation_ShouldReturnRecommendationDTO() {
         when(externalIntegrationService.validateClientExists(100L)).thenReturn(true);
         when(modelPortfolioRepository.findById(1L)).thenReturn(Optional.of(modelPortfolio));
         
@@ -82,7 +82,7 @@ class RecommendationServiceImplTest {
         
         when(recommendationRepository.save(any(Recommendation.class))).thenReturn(recommendation);
 
-        RecommendationResponseDTO response = recommendationService.createRecommendation(recommendationRequestDTO);
+        RecommendationDTO response = recommendationService.createRecommendation(recommendationDTO);
 
         assertNotNull(response);
         assertEquals(recommendation.getRecoId(), response.getRecoId());
@@ -93,7 +93,7 @@ class RecommendationServiceImplTest {
     void getRecommendationsByClientId_ShouldReturnList() {
         when(recommendationRepository.findByClientId(100L)).thenReturn(Collections.singletonList(recommendation));
 
-        List<RecommendationResponseDTO> responses = recommendationService.getRecommendationsByClientId(100L);
+        List<RecommendationDTO> responses = recommendationService.getRecommendationsByClientId(100L);
 
         assertNotNull(responses);
         assertEquals(1, responses.size());
@@ -103,7 +103,7 @@ class RecommendationServiceImplTest {
     void getRecommendationById_ShouldReturnRecommendation() {
         when(recommendationRepository.findById(1L)).thenReturn(Optional.of(recommendation));
 
-        RecommendationResponseDTO response = recommendationService.getRecommendationById(1L);
+        RecommendationDTO response = recommendationService.getRecommendationById(1L);
 
         assertNotNull(response);
         assertEquals(recommendation.getRecoId(), response.getRecoId());

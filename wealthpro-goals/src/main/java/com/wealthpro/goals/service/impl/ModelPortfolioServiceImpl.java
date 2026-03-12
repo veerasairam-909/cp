@@ -1,7 +1,6 @@
 package com.wealthpro.goals.service.impl;
 
-import com.wealthpro.goals.dto.ModelPortfolioRequestDTO;
-import com.wealthpro.goals.dto.ModelPortfolioResponseDTO;
+import com.wealthpro.goals.dto.ModelPortfolioDTO;
 import com.wealthpro.goals.entity.ModelPortfolio;
 import com.wealthpro.goals.client.ExternalIntegrationService;
 import com.wealthpro.goals.repository.ModelPortfolioRepository;
@@ -22,7 +21,7 @@ public class ModelPortfolioServiceImpl implements ModelPortfolioService {
 
     @Override
     @Transactional
-    public ModelPortfolioResponseDTO createModelPortfolio(ModelPortfolioRequestDTO requestDTO) {
+    public ModelPortfolioDTO createModelPortfolio(ModelPortfolioDTO requestDTO) {
         if (!externalIntegrationService.validateRiskClassExists(requestDTO.getRiskClass())) {
             throw new IllegalArgumentException("Invalid Risk Class from External Service: " + requestDTO.getRiskClass());
         }
@@ -34,18 +33,18 @@ public class ModelPortfolioServiceImpl implements ModelPortfolioService {
                 .status(requestDTO.getStatus())
                 .build();
         ModelPortfolio savedModel = modelPortfolioRepository.save(modelPortfolio);
-        return mapToModelPortfolioResponseDTO(savedModel);
+        return mapToModelPortfolioDTO(savedModel);
     }
 
     @Override
-    public List<ModelPortfolioResponseDTO> getAllActiveModelPortfolios() {
+    public List<ModelPortfolioDTO> getAllActiveModelPortfolios() {
         return modelPortfolioRepository.findByStatus("ACTIVE").stream()
-                .map(this::mapToModelPortfolioResponseDTO)
+                .map(this::mapToModelPortfolioDTO)
                 .collect(Collectors.toList());
     }
 
-    public ModelPortfolioResponseDTO mapToModelPortfolioResponseDTO(ModelPortfolio model) {
-        ModelPortfolioResponseDTO dto = new ModelPortfolioResponseDTO();
+    public ModelPortfolioDTO mapToModelPortfolioDTO(ModelPortfolio model) {
+        ModelPortfolioDTO dto = new ModelPortfolioDTO();
         dto.setModelId(model.getModelId());
         dto.setName(model.getName());
         dto.setRiskClass(model.getRiskClass());
